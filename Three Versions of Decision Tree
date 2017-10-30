@@ -1,0 +1,138 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Oct  3 15:05:17 2017
+
+@author: Adeshina Alani
+"""
+
+from util2 import Arff2Skl
+import numpy as np
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+from sklearn.model_selection import cross_val_score, train_test_split
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
+from sklearn.preprocessing import LabelEncoder
+import graphviz 
+import os
+
+cvt = Arff2Skl('contact-lenses.arff')
+label = cvt.meta.names()[-1]
+X, y = cvt.transform(label)
+
+#print (X)
+#print (y)
+#Splitting of Training Data to Test and Training Set
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.15)  # For Conversion
+
+
+
+print  ("############### Decision Tree Classifier  ########## ")
+
+classifier = DecisionTreeClassifier() # Object of the classifier
+
+fit = classifier.fit(X_train,y_train) # Fit the model
+
+print (fit.predict(X_test)) # Predict
+y_predict = fit.predict(X_test)
+print (fit.score(X_test, y_test))
+
+print ("############### End Of Decision Tree ########################")
+
+print ("****************************************************************************")   
+print  ("######### Decision Tree Classifier Using Panda  ######## ")
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.25) 
+
+filepath = "C:/UVic/COurses/CSC 578D/Assignment/assignment_data.csv"
+column_names= ['age','spectacle_description','astigmatic','tear-production-rate','contact-lenses']
+data_df = pd.read_csv(filepath, names=column_names, sep = ',')
+
+
+#Preprocessing our category data
+#age
+lb_age = LabelEncoder() # Create the Object of age Label Encoder
+data_df["age_code"] = lb_age.fit_transform(data_df["age"])
+#print (data_df[["age", "age_code"]].head(24))
+
+#spectacle_description
+lb_spec_desc = LabelEncoder() # Create the Object of age Label Encoder
+data_df["spec_desc_code"] = lb_spec_desc.fit_transform(data_df["spectacle_description"])
+#print (data_df[["age", "lb_spec_desc_code"]].head(24))
+
+#astigmatic
+lb_astigmatic = LabelEncoder() # Create the Object of age Label Encoder
+data_df["astigmatic_code"] = lb_astigmatic.fit_transform(data_df["astigmatic"])
+
+#tear-production-rate
+lb_tear = LabelEncoder() # Create the Object of age Label Encoder
+data_df["tear-production-rate_code"] = lb_tear.fit_transform(data_df["tear-production-rate"])
+
+
+#lb_contact-lenses
+lb_contact = LabelEncoder() # Create the Object of age Label Encoder
+data_df["contact-lenses_code"] = lb_contact.fit_transform(data_df["contact-lenses"])
+
+data_df_new = (data_df[['age_code','spec_desc_code','astigmatic_code','tear-production-rate_code','contact-lenses_code']]).copy()
+
+
+#print (data_df_new)
+
+#print (data_df)
+X= data_df_new.iloc[:,:4]
+
+#print (X)
+y = data_df_new['contact-lenses_code']
+#print (y)
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.25)
+
+#print (y_train)
+
+classifier = DecisionTreeClassifier(criterion='entropy') # Object of the classifier
+
+fit = classifier.fit(X_train,y_train) # Fit the model
+
+print (fit.predict(X_test)) # Predict
+y_predict = fit.predict(X_test)
+print (fit.score(X_test, y_test))
+tree.export_graphviz(classifier, out_file='katch_tree.dot', feature_names= ['Age','Spec-Description','Astigmatic','Tear-Production-Rate','Predicted'] )
+
+
+
+
+
+print ("######### End Of Decision Tree Using Panda ########")
+
+print ("### End Of Decision Tree Using Panda & Binarizer Preprocessing ###")
+data_df_new_numpy = data_df_new.as_matrix() # Convert the panda to numpy array
+
+
+normalise = preprocessing.Binarizer().fit(data_df_new_numpy) 
+res_nor = normalise.transform(data_df_new_numpy)
+
+X = res_nor[:,:4] # Select the features
+#print (X)
+y = res_nor[:,4:5] # Select the label
+
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.25)
+classifier = DecisionTreeClassifier(criterion='entropy') # Object of the classifier
+print (classifier)
+fit = classifier.fit(X_train,y_train) # Fit the model
+
+print (fit.predict(X_test)) # Predict
+y_predict = fit.predict(X_test)
+print (fit.score(X_test, y_test))
+print ("@@@@@@@@@@@@@@@@@@@")
+print (y_test.size)
+rol,col = y_test.shape
+print ("Role %s and Column %s" ,rol, col)
+
+dot_data = tree.export_graphviz(classifier, out_file='adeshina_tree.dot', feature_names= ['Age','Spectacle-Description','Astigmatic','Tear-Production-Rate','Predicted Contact Lense'] )
+
+
+'''
+dot_data = tree.export_graphviz(classifier, out_file= None)
+graph = graphviz.Source(dot_data)
+graph.render("Adeshina")
+'''
