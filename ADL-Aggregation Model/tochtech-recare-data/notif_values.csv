@@ -1,0 +1,8 @@
+default,default_1,True,0,{user} is away,19,0,0
+default,default_2,True,0,{user} is back,20,0,0
+default,default_3,True,300,{user} open door,5,0,1260
+default,default_4,True,0,{user} taking medicine,9,0,0
+default,default_5,True,0,{user} in bed,1,0,0
+default,default_6,True,0,{user} off bed,2,0,0
+default,default_7,False,0,{user} flush toilet,11,0,0
+default,default_8,True,300,{user} close door,6,0,1260

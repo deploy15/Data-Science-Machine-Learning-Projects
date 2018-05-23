@@ -1,0 +1,12 @@
+recare,hum,30,Humidity
+recare,pir,20,Motion
+recare,sw,0,Not in Used
+recare,sw,1,Bed
+recare,sw,2,Chair
+recare,sw,3,Door
+recare,sw,4,Fridge Door
+recare,sw,5,Medication Cabinet Door
+recare,sw,6,Toilet
+recare,sw,7,Dryer
+recare,sw,8,Light
+recare,tmp,40,Temperature

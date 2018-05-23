@@ -10,7 +10,6 @@ from scipy import stats
 from scipy.stats import rv_continuous
 import numpy as np
 import pandas as  pd
-import numpy
 from sklearn import preprocessing
 from sklearn.preprocessing import LabelEncoder
 
